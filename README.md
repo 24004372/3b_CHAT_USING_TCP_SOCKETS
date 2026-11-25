@@ -10,33 +10,65 @@ To write a python program for creating Chat using TCP Sockets Links.
 ## PROGRAM
 ### SERVER:
 ```
-import socket 
-s=socket.socket() 
-s.bind(('localhost',8000)) 
-s.listen(5) 
-c,addr=s.accept() 
-while True: 
-            ClientMessage=c.recv(1024).decode() 
-            print("Client > ",ClientMessage) 
-            msg=input("Server > ") 
-            c.send(msg.encode())
+import socket
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+server.bind(('localhost', 8000))
+server.listen(1)
+
+print("Server is waiting for client...")
+
+conn, addr = server.accept()
+print("Client connected:", addr)
+
+while True:
+    msg = conn.recv(1024).decode()
+
+    if msg.lower() == 'exit':
+        print("Client disconnected")
+        break
+
+    print("Client:", msg)
+
+    reply = input("Server: ")
+    conn.send(reply.encode())
+
+    if reply.lower() == 'exit':
+        break
+
+conn.close()
+server.close()
 ```
 ### CLIENT:
 ```
-import socket 
-s=socket.socket() 
-s.connect(('localhost',8000)) 
-while True: 
-    msg=input("Client > ") 
-    s.send(msg.encode()) 
-    print("Server > ",s.recv(1024).decode())
+import socket
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+client.connect(('localhost', 8000))
+
+print("Connected to server")
+
+while True:
+    msg = input("Client: ")
+    client.send(msg.encode())
+
+    if msg.lower() == 'exit':
+        break
+
+    reply = client.recv(1024).decode()
+    print("Server:", reply)
+
+    if reply.lower() == 'exit':
+        break
+
+client.close()
 ```
 ## OUPUT
-### SERVER:
-<img width="937" height="238" alt="image" src="https://github.com/user-attachments/assets/46742da9-77e9-4093-a954-15b23365e2f3" />
+### SERVER & CLIENT:
 
-### CLIENT:
-<img width="942" height="235" alt="image" src="https://github.com/user-attachments/assets/44418330-ffc9-4096-9c41-880b83e41ebf" />
+<img width="1327" height="382" alt="image" src="https://github.com/user-attachments/assets/fd067637-3978-4181-9c1a-a491aed53189" />
 
 
 ## RESULT
